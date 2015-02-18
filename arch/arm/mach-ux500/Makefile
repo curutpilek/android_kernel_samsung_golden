@@ -112,10 +112,7 @@ obj-$(CONFIG_INPUT_AB8505_MICRO_USB_DETECT)	+= ssg_micro_usb_iddet.o abx_micro_u
 obj-$(CONFIG_BT_BCM4330)			+= board-bluetooth-bcm4330.o
 obj-$(CONFIG_BT_BCM4334)			+= board-bluetooth-bcm4334.o
 obj-$(CONFIG_MACH_SAMSUNG_UX500)	+= sec_common.o
-obj-y                                  += sec_debug/
-obj-$(CONFIG_SEC_DEBUG)			+= sec_debug.o
 obj-$(CONFIG_SAMSUNG_USE_SEC_LOG_BUF)	+= sec_log_buf.o
 obj-$(CONFIG_SAMSUNG_ADD_GAFORENSICINFO)+= sec_gaf.o
 obj-$(CONFIG_SAMSUNG_USE_GETLOG)	+= sec_getlog.o
 obj-$(CONFIG_SAMSUNG_USE_LOGGER_ADDON)	+= sec_logger.o
-

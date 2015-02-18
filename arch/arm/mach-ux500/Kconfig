@@ -269,10 +269,6 @@ endchoice
 menu "Samsung Product Features"
 config SAMSUNG_PRODUCT_SHIP
         bool "set up for product for shipping"
-config SEC_DEBUG_LEVEL
-	int "set up debug level"
-	default 1
-source "arch/arm/mach-ux500/sec_debug/Kconfig"
 endmenu
 endif
 

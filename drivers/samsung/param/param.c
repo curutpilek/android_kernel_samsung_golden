@@ -147,8 +147,6 @@ static void param_set_default(void)
 	param_status.param_int_list.param_list[9].value = REBOOT_MODE;
 	param_status.param_int_list.param_list[10].ident = __NATION_SEL;
 	param_status.param_int_list.param_list[10].value = NATION_SEL;
-	param_status.param_int_list.param_list[11].ident = __DEBUG_LEVEL;
-	param_status.param_int_list.param_list[11].value = DEBUG_LEVEL;
 	param_status.param_int_list.param_list[12].ident = __SET_DEFAULT_PARAM;
 	param_status.param_int_list.param_list[12].value = SET_DEFAULT_PARAM;
 	param_status.param_int_list.param_list[13].ident = __BATT_CAPACITY;
