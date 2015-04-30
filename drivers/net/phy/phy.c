@@ -170,9 +170,9 @@ static const struct phy_setting settings[] = {
  *   of that setting.  Returns the index of the last setting if
  *   none of the others match.
  */
-static inline int phy_find_setting(int speed, int duplex)
+static inline unsigned int phy_find_setting(int speed, int duplex)
 {
-	int idx = 0;
+	unsigned int idx = 0;
 
 	while (idx < ARRAY_SIZE(settings) &&
 			(settings[idx].speed != speed ||
@@ -192,7 +192,7 @@ static inline int phy_find_setting(int speed, int duplex)
  *   the mask in features.  Returns the index of the last setting
  *   if nothing else matches.
  */
-static inline int phy_find_valid(int idx, u32 features)
+static inline unsigned int phy_find_valid(unsigned int idx, u32 features)
 {
 	while (idx < MAX_NUM_SETTINGS && !(settings[idx].setting & features))
 		idx++;
@@ -211,7 +211,7 @@ static inline int phy_find_valid(int idx, u32 features)
 static void phy_sanitize_settings(struct phy_device *phydev)
 {
 	u32 features = phydev->supported;
-	int idx;
+	unsigned int idx;
 
 	/* Sanitize settings based on PHY capabilities */
 	if ((features & SUPPORTED_Autoneg) == 0)
@@ -471,7 +471,7 @@ void phy_stop_machine(struct phy_device *phydev)
  */
 static void phy_force_reduction(struct phy_device *phydev)
 {
-	int idx;
+	unsigned int idx;
 
 	idx = phy_find_setting(phydev->speed, phydev->duplex);
 	
@@ -818,7 +818,7 @@ void phy_state_machine(struct work_struct *work)
 				phydev->adjust_link(phydev->attached_dev);
 
 			} else if (0 == phydev->link_timeout--) {
-				int idx;
+				unsigned int idx;
 
 				needs_aneg = 1;
 				/* If we have the magic_aneg bit,

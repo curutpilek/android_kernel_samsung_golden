@@ -95,7 +95,12 @@ void hook_ifault_code(int nr, int (*fn)(unsigned long, unsigned int,
 		     int sig, int code, const char *name);
 
 #define xchg(ptr,x) \
-	((__typeof__(*(ptr)))__xchg((unsigned long)(x),(ptr),sizeof(*(ptr))))
+({ \
+	__typeof__(*(ptr)) __ret; \
+	__ret = (__typeof__(*(ptr))) \
+		__xchg((unsigned long)(x), (ptr), sizeof(*(ptr))); \
+	__ret; \
+})
 
 extern asmlinkage void __backtrace(void);
 extern asmlinkage void c_backtrace(unsigned long fp, int pmode);

@@ -168,6 +168,10 @@ void ftrace_likely_update(struct ftrace_branch_data *f, int val, int expect);
 
 #endif /* __ASSEMBLY__ */
 
+#ifndef OPTIMIZER_HIDE_VAR
+#define OPTIMIZER_HIDE_VAR(var) barrier()
+#endif
+
 #ifdef __KERNEL__
 /*
  * Allow us to mark functions as 'deprecated' and have gcc emit a nice
