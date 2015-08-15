@@ -1952,10 +1952,10 @@ rear_flash_enable_store(struct device *dev,
 }
 
 static DEVICE_ATTR(camtype, 0440, rear_camera_type_show, NULL);
-static DEVICE_ATTR(enable, 0220, NULL, rear_flash_enable_store);
+static DEVICE_ATTR(enable, 0220, NULL, (void *) rear_flash_enable_store);
 static DEVICE_ATTR(front_camtype, 0440, front_camera_type_show, NULL);
 static DEVICE_ATTR(rear_camtype, 0440, rear_camera_type_show, NULL);
-static DEVICE_ATTR(rear_flash, 0220, NULL, rear_flash_enable_store);
+static DEVICE_ATTR(rear_flash, 0220, NULL, (void *) rear_flash_enable_store);
 
 void sec_cam_init(void)
 {
