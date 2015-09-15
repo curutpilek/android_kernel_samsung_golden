@@ -255,11 +255,14 @@ KERNELFLAGS	= -Ofast -Wall -fivopts \
 		  -ftree-loop-im -ftracer \
 		  -funsafe-loop-optimizations \
 		  -funswitch-loops \
+		  -ffast-math -ftrapping-math \
 		  -Wno-unused-function \
 		  -Wno-unused-label \
 		  -Wno-unused-result \
 		  -Wno-unused-value \
 		  -Wno-unused-variable \
+		  -fno-associative-math \
+		  -fno-finite-math-only \
 		  -fno-strict-aliasing \
 		  -fno-aggressive-loop-optimizations \
 		  -fno-common
