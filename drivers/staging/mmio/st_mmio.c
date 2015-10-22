@@ -80,8 +80,6 @@
 
 #ifdef CONFIG_MACH_SEC_GOLDEN
 #define VT_CAM_ID 226    /* GOLDEN VT_CAM_ID GPIO number*/
-#elif defined(CONFIG_MACH_JANICE)
-#define VT_CAM_ID 66    /* JANICE VT_CAM_ID GPIO number*/
 #else
 #define VT_CAM_ID 66    /*  VT_CAM_ID GPIO number*/
 #endif
@@ -707,7 +705,7 @@ static int mmio_cam_pwr_sensor(struct mmio_info *info, int on)
 	/* working at MMIO_Camera.cpp */
 	dev_dbg(info->dev, "mmio_cam_pwr_sensor %d\n", on);
 
-#if defined(CONFIG_MACH_JANICE) || defined(CONFIG_MACH_GAVINI)
+#ifdef CONFIG_MACH_GAVINI
 
 	if (on)
 	{
@@ -724,9 +722,9 @@ static int mmio_cam_pwr_sensor(struct mmio_info *info, int on)
 
 		subPMIC_PowerOn(0x0);
 	}
-	else /* Power Off for Janice and Gavini */
-	{
-		subPMIC_PowerOff(0x0);
+    else /* Power Off for Gavini */
+    {
+        subPMIC_PowerOff(0x0);
 
 		mmio_cam_control_clocks(info, false);
 
@@ -1504,7 +1502,7 @@ static int mmio_cam_flash_on_off(struct mmio_info *info, int set, int on)
 	int i = 0;
 	int lux_val = on;
 
-#if defined(CONFIG_MACH_JANICE) || defined(CONFIG_MACH_GAVINI)
+#ifdef CONFIG_MACH_GAVINI
 	if (lux_val == 100) {
 		gpio_set_value(FLASH_EN, 0);
 		for (i = lux_val; i > 1; i--) {
@@ -2112,9 +2110,7 @@ front_camera_type_show(struct device *dev,
 {
 	char camType[128] = {0};
 #ifdef CONFIG_MACH_SEC_GOLDEN
-	strncpy(camType, "SF_SR030PC50_NONE\n" , 128);
-#elif defined CONFIG_MACH_JANICE
-	strncpy(camType, "SLSI_S5K6AAFX_NONE\n" , 128);
+       strncpy(camType, "SF_SR030PC50_NONE\n" , 128);
 #else
 	strncpy(camType, "DB_DB8131M_NONE\n" , 128);
 #endif
@@ -2368,8 +2364,8 @@ static int __devinit mmio_probe(struct platform_device *pdev)
 			info->misc_dev.minor);
 	/*godin+ */
 
-	/* Function Pointer Mapping */
-#if defined(CONFIG_MACH_JANICE) || defined(CONFIG_MACH_GAVINI)
+/* Function Pointer Mapping */
+#ifdef CONFIG_MACH_GAVINI
 	dev_info(info->dev, "NCP6914 Camera Sub-PMIC\n");
 	subPMIC_module_init = NCP6914_subPMIC_module_init;
 	subPMIC_module_exit = NCP6914_subPMIC_module_exit;
@@ -2431,11 +2427,6 @@ static int __devinit mmio_probe(struct platform_device *pdev)
 	assistive_mode = 0;
 	cam_clock_state = 0;
 	vt_id = 0;  /* Global variable for (VT_CAM_ID) value*/
-
-#ifdef CONFIG_MACH_JANICE
-	/*Check fromt camera VT_CAM_ID*/
-	check_VT_CAM_ID(VT_CAM_ID_CHECK_POWER);
-#endif
 
 	/*godin- */
 	return 0;
