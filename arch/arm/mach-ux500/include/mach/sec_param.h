@@ -82,8 +82,6 @@
 
 #if defined(CONFIG_MACH_JANICE)
 #define VERSION_LINE			"I9070XXLXXX"
-#elif defined(CONFIG_MACH_CODINA)
-#define VERSION_LINE			"I8160XXLXXX"
 #elif defined(CONFIG_MACH_GAVINI)
 #define VERSION_LINE			"I8530XXLXXX"
 #elif defined(CONFIG_MACH_SEC_KYLE)
