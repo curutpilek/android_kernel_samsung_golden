@@ -76,11 +76,10 @@
 #define upper_16_bits(n) ((u16)((u32)(n) >> 16))
 
 /* Check VT_CAM_ID */
-/*  Codina VT_CAM_ID can be checked by CAM_VDDIO_1V8 (LDO2)*/
 #define VT_CAM_ID_CHECK_POWER 2
 
-#if defined(CONFIG_MACH_CODINA) || defined(CONFIG_MACH_SEC_GOLDEN) || defined(CONFIG_MACH_SEC_SKOMER) || defined(CONFIG_MACH_SEC_HENDRIX)
-#define VT_CAM_ID 226    /* Codina VT_CAM_ID GPIO number*/
+#ifdef CONFIG_MACH_SEC_GOLDEN
+#define VT_CAM_ID 226    /* GOLDEN VT_CAM_ID GPIO number*/
 #elif defined(CONFIG_MACH_JANICE)
 #define VT_CAM_ID 66    /* JANICE VT_CAM_ID GPIO number*/
 #else
@@ -741,7 +740,7 @@ static int mmio_cam_pwr_sensor(struct mmio_info *info, int on)
 		gpio_set_value(SECONDARY_CAMERA_STBY, 0);
 	}
 
-#elif defined(CONFIG_MACH_SEC_GOLDEN) || defined(CONFIG_MACH_CODINA)
+#elif defined(CONFIG_MACH_SEC_GOLDEN)
 
 	if(on) /* Power On For Gorden */
 	{
@@ -760,66 +759,20 @@ static int mmio_cam_pwr_sensor(struct mmio_info *info, int on)
 
 		if(info->pdata->camera_slot == PRIMARY_CAMERA)
 		{
-#if defined(CONFIG_MACH_SEC_GOLDEN)
+#ifdef CONFIG_MACH_SEC_GOLDEN
 			if(system_rev < GOLDEN_R0_4)
 				SM5103_MainCamera_On(info, on); /* Main Camera Power On */
 			else
 				NCP6914_MainCamera_On(info, on);
-#elif defined(CONFIG_MACH_CODINA)
-			switch (system_rev){
-				case CODINA_TMO_R0_0:
-				case CODINA_TMO_R0_0_A:
-				case CODINA_TMO_R0_1:
-				case CODINA_TMO_R0_4:
-				case CODINA_TMO_R0_6:
-				case CODINA_R0_0:
-				case CODINA_R0_1:
-				case CODINA_R0_3:
-				case CODINA_R0_4:
-				case CODINA_R0_5:
-					NCP6914_MainCamera_On(info, on);
-					break;
-
-				case CODINA_TMO_R0_2:
-				case CODINA_R0_2:
-					SM5103_MainCamera_On(info, on);
-					break;
-
-				default:
-					break;
-			}
 #endif
 		}
 		else
 		{
-#if defined(CONFIG_MACH_SEC_GOLDEN)
+#ifdef CONFIG_MACH_SEC_GOLDEN
 			if(system_rev < GOLDEN_R0_4)
 				SM5103_SubCamera_On(info, on); /* Sub Camera Power On */
 			else
 				NCP6914_SubCamera_On(info, on);
-#elif defined(CONFIG_MACH_CODINA)
-			switch (system_rev){
-				case CODINA_TMO_R0_0:
-				case CODINA_TMO_R0_0_A:
-				case CODINA_TMO_R0_1:
-				case CODINA_TMO_R0_4:
-				case CODINA_TMO_R0_6:
-				case CODINA_R0_0:
-				case CODINA_R0_1:
-				case CODINA_R0_3:
-				case CODINA_R0_4:
-				case CODINA_R0_5:
-					NCP6914_SubCamera_On(info, on);
-					break;
-
-				case CODINA_TMO_R0_2:
-				case CODINA_R0_2:
-					SM5103_SubCamera_On(info, on);
-					break;
-
-				default:
-					break;
-			}
 #endif
 		}
 
@@ -837,66 +790,20 @@ static int mmio_cam_pwr_sensor(struct mmio_info *info, int on)
 	{
 		if(info->pdata->camera_slot == PRIMARY_CAMERA)
 		{
-#if defined(CONFIG_MACH_SEC_GOLDEN)
+#ifdef CONFIG_MACH_SEC_GOLDEN
 			if(system_rev < GOLDEN_R0_4)
 				SM5103_MainCamera_Off(info, on); /* Main Camera Off */
 			else
 				NCP6914_MainCamera_Off(info, on);
-#elif defined(CONFIG_MACH_CODINA)
-			switch (system_rev){
-				case CODINA_TMO_R0_0:
-				case CODINA_TMO_R0_0_A:
-				case CODINA_TMO_R0_1:
-				case CODINA_TMO_R0_4:
-				case CODINA_TMO_R0_6:
-				case CODINA_R0_0:
-				case CODINA_R0_1:
-				case CODINA_R0_3:
-				case CODINA_R0_4:
-				case CODINA_R0_5:
-					NCP6914_MainCamera_Off(info, on);
-					break;
-
-				case CODINA_TMO_R0_2:
-				case CODINA_R0_2:
-					SM5103_MainCamera_Off(info, on);
-					break;
-
-				default:
-					break;
-			}
 #endif
 		}
 		else
 		{
-#if defined(CONFIG_MACH_SEC_GOLDEN)
+#ifdef CONFIG_MACH_SEC_GOLDEN
 			if(system_rev < GOLDEN_R0_4)
 				SM5103_SubCamera_Off(info, on); /* Sub Camera Off for Golden*/
 			else
 				NCP6914_SubCamera_Off(info, on);
-#elif defined(CONFIG_MACH_CODINA)
-			switch (system_rev){
-				case CODINA_TMO_R0_0:
-				case CODINA_TMO_R0_0_A:
-				case CODINA_TMO_R0_1:
-				case CODINA_TMO_R0_4:
-				case CODINA_TMO_R0_6:
-				case CODINA_R0_0:
-				case CODINA_R0_1:
-				case CODINA_R0_3:
-				case CODINA_R0_4:
-				case CODINA_R0_5:
-					NCP6914_SubCamera_Off(info, on);
-					break;
-
-				case CODINA_TMO_R0_2:
-				case CODINA_R0_2:
-					SM5103_SubCamera_Off(info, on);
-					break;
-
-				default:
-					break;
-			}
 #endif
 		}
 
@@ -1333,7 +1240,6 @@ mmio_enable_xshutdown_from_host(struct mmio_info *info, unsigned long enable)
 #if 0
 	int err = 0;
 	info->xshutdown_is_active_high = enable & MMIO_XSHUTDOWN_ACTIVE_HIGH;
-
 	if (enable & MMIO_XSHUTDOWN_ENABLE) {
 		err = info->pdata->config_xshutdown_pins(info->pdata,
 				MMIO_ENABLE_XSHUTDOWN_HOST,
@@ -1348,7 +1254,6 @@ mmio_enable_xshutdown_from_host(struct mmio_info *info, unsigned long enable)
 		 * provided by firmware
 		 */
 	}
-
 	info->xshutdown_enabled = enable & MMIO_XSHUTDOWN_ENABLE;
 #endif
 	return 0;
@@ -1652,18 +1557,8 @@ static int mmio_cam_flash_on_off(struct mmio_info *info, int set, int on)
 		gpio_set_value(FLASH_EN, 0);
 		gpio_set_value(FLASH_MODE, 0);
 	}
-#elif defined(CONFIG_MACH_SEC_GOLDEN) || defined(CONFIG_MACH_SEC_KYLE) || defined(CONFIG_MACH_SEC_SKOMER) \
-	|| defined(CONFIG_MACH_SEC_HENDRIX) /* RT8515 */
+#elif defined(CONFIG_MACH_SEC_GOLDEN) || defined(CONFIG_MACH_SEC_KYLE) /* RT8515 */
 	mmio_cam_flash_rt8515(lux_val);
-#else /* KTD262 */
-	if(CODINA_R0_0 <= system_rev && system_rev <= CODINA_R0_5) // Codina
-	{
-		mmio_cam_flash_ktd262(lux_val);
-	}
-	else // Codina TMO
-	{
-		mmio_cam_flash_rt8515(lux_val);
-	}
 #endif
 	return 0;		/* Always success */
 }
@@ -2216,8 +2111,7 @@ front_camera_type_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
 	char camType[128] = {0};
-#if defined (CONFIG_MACH_CODINA) || defined(CONFIG_MACH_SEC_GOLDEN) || defined(CONFIG_MACH_SEC_KYLE) || defined(CONFIG_MACH_SEC_SKOMER) \
-	|| defined(CONFIG_MACH_SEC_HENDRIX)
+#ifdef CONFIG_MACH_SEC_GOLDEN
 	strncpy(camType, "SF_SR030PC50_NONE\n" , 128);
 #elif defined CONFIG_MACH_JANICE
 	strncpy(camType, "SLSI_S5K6AAFX_NONE\n" , 128);
@@ -2512,41 +2406,6 @@ static int __devinit mmio_probe(struct platform_device *pdev)
 	subPMIC_PowerOn     = NCP6914_subPMIC_PowerOn;
 	subPMIC_PowerOff    = NCP6914_subPMIC_PowerOff;
 	subPMIC_PinOnOff    = NCP6914_subPMIC_PinOnOff;
-#elif defined(CONFIG_MACH_CODINA)
-	switch (system_rev){
-		case CODINA_TMO_R0_0:
-		case CODINA_TMO_R0_0_A:
-		case CODINA_TMO_R0_1:
-		case CODINA_TMO_R0_4:
-		case CODINA_TMO_R0_6:
-		case CODINA_R0_0:
-		case CODINA_R0_1:
-		case CODINA_R0_3:
-		case CODINA_R0_4:
-		case CODINA_R0_5:
-			dev_info(info->dev, "system_rev %d, NCP6914 Camera Sub-PMIC\n", system_rev);
-			subPMIC_module_init = NCP6914_subPMIC_module_init;
-			subPMIC_module_exit = NCP6914_subPMIC_module_exit;
-			subPMIC_PowerOn     = NCP6914_subPMIC_PowerOn;
-			subPMIC_PowerOff    = NCP6914_subPMIC_PowerOff;
-			subPMIC_PinOnOff    = NCP6914_subPMIC_PinOnOff;
-			break;
-
-		case CODINA_TMO_R0_2:
-		case CODINA_R0_2:
-			dev_info(info->dev, "system_rev %d, SM5103 Camera Sub-PMIC\n", system_rev);
-			subPMIC_module_init = SM5103_subPMIC_module_init;
-			subPMIC_module_exit = SM5103_subPMIC_module_exit;
-			subPMIC_PowerOn     = SM5103_subPMIC_PowerOn;
-			subPMIC_PowerOff    = SM5103_subPMIC_PowerOff;
-			subPMIC_PinOnOff    = SM5103_subPMIC_PinOnOff;
-			break;
-
-		default:
-			dev_err(info->dev, "system_rev: %d, Could not find Camera Sub-PMIC\n", system_rev);
-			break;
-	}
-
 #elif defined(CONFIG_MACH_SEC_KYLE)
 
 	if(KYLE_ATT_R0_1 == system_rev) {
@@ -2573,7 +2432,7 @@ static int __devinit mmio_probe(struct platform_device *pdev)
 	cam_clock_state = 0;
 	vt_id = 0;  /* Global variable for (VT_CAM_ID) value*/
 
-#if defined(CONFIG_MACH_CODINA) || defined(CONFIG_MACH_JANICE)
+#ifdef CONFIG_MACH_JANICE
 	/*Check fromt camera VT_CAM_ID*/
 	check_VT_CAM_ID(VT_CAM_ID_CHECK_POWER);
 #endif
@@ -2594,7 +2453,7 @@ err_alloc:
 
 void check_VT_CAM_ID(int pin)
 {
-	subPMIC_PowerOn(0); /* subPMIC_PowerOn option 0 for Janice and Codina */
+	subPMIC_PowerOn(0); /* subPMIC_PowerOn option 0 for Janice */
 
 	mmio_cam_power_pin_control(pin, ON); /* Power PIN ON*/
 
