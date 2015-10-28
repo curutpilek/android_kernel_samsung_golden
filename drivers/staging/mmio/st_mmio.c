@@ -144,10 +144,6 @@ struct mmio_info {
 #define SECONDARY_CAMERA_STBY 64
 #define SECONDARY_CAMERA_RESET 65
 
-#if defined(CONFIG_MACH_SEC_SKOMER) || defined(CONFIG_MACH_SEC_HENDRIX)
-#define COMMON_CAMERA_VFUSE 66
-#endif
-
 #define FLASH_EN  140
 #define FLASH_MODE  141
 
@@ -161,20 +157,12 @@ void sec_camera_gpio_init(void)
 	gpio_request(SECONDARY_CAMERA_RESET, "SEC_CAM_RST"); /* GPIO PIN Request*/
 	gpio_request(FLASH_EN, "FLASH_EN"); /* GPIO PIN Request*/
 	gpio_request(FLASH_MODE, "FLASH_MODE"); /* GPIO PIN Request*/
-#if defined(CONFIG_MACH_SEC_SKOMER) || defined(CONFIG_MACH_SEC_HENDRIX)
-	gpio_request(COMMON_CAMERA_VFUSE, "CAM_VFUSE"); /* GPIO PIN Request*/
-#endif
-
 	gpio_set_value(PRIMARY_CAMERA_RESET, 0);
 	gpio_set_value(PRIMARY_CAMERA_STBY, 0);
 	gpio_set_value(SECONDARY_CAMERA_RESET, 0);
 	gpio_set_value(SECONDARY_CAMERA_STBY, 0);
 	gpio_set_value(FLASH_EN, 0); /* GPIO PIN Request*/
 	gpio_set_value(FLASH_MODE, 0); /* GPIO PIN Request*/
-#if defined(CONFIG_MACH_SEC_SKOMER) || defined(CONFIG_MACH_SEC_HENDRIX)
-	gpio_set_value(COMMON_CAMERA_VFUSE, 0); /* GPIO PIN Request*/
-#endif
-
 }
 /* Samsung- */
 
@@ -332,38 +320,6 @@ void SM5103_MainCamera_Off(struct mmio_info *info, int off)
 
 void SM5103_SubCamera_On(struct mmio_info *info, int on)
 {
-#if	defined (CONFIG_MACH_SEC_SKOMER) 
-#if 0
-	/* CAM_AVDD_2V8 On */
-	mmio_cam_power_pin_control(0x1, 1);
-	udelay(1);
-#endif
-	/* CAM_CORE_1V2, Buck Off */
-	mmio_cam_power_pin_control(0x0, 0);
-	udelay(1);
-	/* CAM_VDDIO_1V8 On */
-	mmio_cam_power_pin_control(0x3, 1);
-	udelay(1);
-
-	/* VT_AVDD_2V8 On */
-	/* Diff between SM5103 and NCP6914 */
-	mmio_cam_power_pin_control(0x4, 1);
-	udelay(1);
-	/* VT_DVDD_1V8 On */
-	mmio_cam_power_pin_control(0x2, 1);
-	mdelay(10);
-
-	mmio_cam_control_clocks(info, true);
-	msleep(10);
-
-	gpio_set_value(SECONDARY_CAMERA_STBY, 1);
-	msleep(10);
-
-	gpio_set_value(SECONDARY_CAMERA_RESET, 1);
-	msleep(10);
-
-#else
-
 #if 0
 	/* CAM_AVDD_2V8 On */
 	mmio_cam_power_pin_control(0x1, 1);
@@ -400,40 +356,10 @@ void SM5103_SubCamera_On(struct mmio_info *info, int on)
 	gpio_set_value(SECONDARY_CAMERA_RESET, 1);
 	msleep(10);
 
-#endif
 }
 
 void SM5103_SubCamera_Off(struct mmio_info *info, int off)
 {
-#if	defined (CONFIG_MACH_SEC_SKOMER)
-
-	gpio_set_value(SECONDARY_CAMERA_RESET, 0);
-	udelay(15);
-
-	gpio_set_value(SECONDARY_CAMERA_STBY, 0);
-	msleep(4);
-
-	mmio_cam_control_clocks(info, false);
-	msleep(10);
-
-	/* VT_DVDD_1V8 Off */
-	mmio_cam_power_pin_control(0x2, 0);
-	udelay(1);
-
-	/* VT_AVDD_2V8 On */
-	/* Diff between SM5103 and NCP6914 */
-	mmio_cam_power_pin_control(0x4, 0);
-	udelay(1);
-
-	/* CAM_VDDIO_1V8 Off */
-	mmio_cam_power_pin_control(0x3, 0);
-	udelay(1);
-
-	/* CAM_AVDD_2V8 Off */
-	mmio_cam_power_pin_control(0x0, 0);
-	udelay(1);
-
-#else
 	gpio_set_value(SECONDARY_CAMERA_RESET, 0);
 	udelay(15);
 
@@ -459,7 +385,6 @@ void SM5103_SubCamera_Off(struct mmio_info *info, int off)
 	/* CAM_AVDD_2V8 Off */
 	mmio_cam_power_pin_control(0x1, 0);
 	udelay(1);
-#endif
 }
 
 void NCP6914_MainCamera_On(struct mmio_info *info, int on)
@@ -539,55 +464,6 @@ void NCP6914_MainCamera_Off(struct mmio_info *info, int off)
 
 void NCP6914_SubCamera_On(struct mmio_info *info, int on)
 {
-#if	defined (CONFIG_MACH_SEC_SKOMER)
-	/* CAM_CORE_1V2, Buck Off */
-	mmio_cam_power_pin_control(0x0, 1);
-	udelay(1);
-
-	/* CAM_VDDIO_1V8 On */
-	mmio_cam_power_pin_control(0x2, 1);
-	udelay(1);
-
-	/* VT_AVDD_2V8 On */
-	/* Diff between SM5103 and NCP6914 */
-	mmio_cam_power_pin_control(0x4, 1);
-	udelay(1);
-
-	/* VT_DVDD_1V8 On */
-	mmio_cam_power_pin_control(0x1, 1);
-	msleep(10);
-
-	mmio_cam_control_clocks(info, true);
-	msleep(10);
-
-	gpio_set_value(SECONDARY_CAMERA_STBY, 1);
-	msleep(10);
-
-	gpio_set_value(SECONDARY_CAMERA_RESET, 1);
-	msleep(10);
-
-#elif	defined (CONFIG_MACH_SEC_HENDRIX)
-	/* CAM_VDDIO_1V8 On */
-	gpio_set_value(SECONDARY_CAMERA_VDDIO, 1);
-	udelay(1);
-
-	/* VT_AVDD_2V8 On */
-	gpio_set_value(SECONDARY_CAMERA_AVDD, 1);
-	udelay(1);
-
-	/* VT_DVDD_1V8 On */
-	gpio_set_value(SECONDARY_CAMERA_DVDD, 1);
-	mdelay(10);
-
-	mmio_cam_control_clocks(info, true);
-	msleep(10);
-
-	gpio_set_value(SECONDARY_CAMERA_STBY, 1);
-	msleep(10);
-
-	gpio_set_value(SECONDARY_CAMERA_RESET, 1);
-	msleep(10);
-#else
 	/* Sensor AVDD 2.8V On */
 	mmio_cam_power_pin_control(0x4, 1);
 	udelay(1);
@@ -617,60 +493,10 @@ void NCP6914_SubCamera_On(struct mmio_info *info, int on)
 	gpio_set_value(SECONDARY_CAMERA_RESET, 1);
 	msleep(10);
 
-#endif
 }
 
 void NCP6914_SubCamera_Off(struct mmio_info *info, int off)
 {
-#if	defined (CONFIG_MACH_SEC_SKOMER)
-
-	gpio_set_value(SECONDARY_CAMERA_RESET, 0);
-	udelay(15);
-
-	gpio_set_value(SECONDARY_CAMERA_STBY, 0);
-	msleep(4);
-
-	mmio_cam_control_clocks(info, false);
-	msleep(10);
-
-	/* VT_DVDD_1V8 Off */
-	mmio_cam_power_pin_control(0x1, 0);
-	udelay(1);
-
-	/* VT_AVDD_2V8 On */
-	/* Diff between SM5103 and NCP6914 */
-	mmio_cam_power_pin_control(0x4, 0);
-	udelay(1);
-
-	/* CAM_VDDIO_1V8 Off */
-	mmio_cam_power_pin_control(0x2, 0);
-	udelay(1);
-
-	/* CAM_AVDD_2V8 Off */
-	mmio_cam_power_pin_control(0x0, 0);
-	udelay(1);
-#elif	defined (CONFIG_MACH_SEC_HENDRIX)
-	gpio_set_value(SECONDARY_CAMERA_RESET, 0);
-	udelay(15);
-
-	gpio_set_value(SECONDARY_CAMERA_STBY, 0);
-	msleep(4);
-
-	mmio_cam_control_clocks(info, false);
-	msleep(10);
-
-	/* VT_DVDD_1V8 Off */
-	gpio_set_value(SECONDARY_CAMERA_DVDD, 0);
-	udelay(1);
-
-	/* VT_AVDD_2V8 On */
-	gpio_set_value(SECONDARY_CAMERA_AVDD, 0);
-	udelay(1);
-
-	/* CAM_VDDIO_1V8 Off */
-	gpio_set_value(SECONDARY_CAMERA_VDDIO, 0);
-	udelay(1);
-#else
 	gpio_set_value(SECONDARY_CAMERA_RESET, 0);
 	udelay(20);
 
@@ -690,7 +516,6 @@ void NCP6914_SubCamera_Off(struct mmio_info *info, int off)
 
 	/* Sensor AVDD 2.8V Off*/
 	mmio_cam_power_pin_control(0x4, 0);
-#endif
 }
 
 /* Camera Main/Sub Power Control */
@@ -772,76 +597,6 @@ static int mmio_cam_pwr_sensor(struct mmio_info *info, int on)
 		gpio_set_value(SECONDARY_CAMERA_RESET, 0);
 		gpio_set_value(SECONDARY_CAMERA_STBY, 0);
 	}
-
-#elif defined (CONFIG_MACH_SEC_SKOMER) || defined(CONFIG_MACH_SEC_HENDRIX)
-	if(on) /* Power On For Gorden */
-	{		
-		gpio_set_value(PRIMARY_CAMERA_RESET, 0);
-		gpio_set_value(PRIMARY_CAMERA_STBY, 0);
-		gpio_set_value(SECONDARY_CAMERA_RESET, 0);
-		gpio_set_value(SECONDARY_CAMERA_STBY, 0);
-
-		err = info->pdata->power_enable(info->pdata);
-
-		mmio_cam_control_clocks(info, false);		
-
-		mdelay(CLOCK_ENABLE_DELAY);
-
-		subPMIC_PowerOn(0x0);
-
-		if(info->pdata->camera_slot == SECONDARY_CAMERA) 
-		{
-			NCP6914_SubCamera_On(info, on);
-		}
-		else 
-		{
-			/*
-			 * When switching from Primary YUV camera
-			 * sensor sequence operated at .dat file	
-			 */
-
-			printk(KERN_DEBUG "Nothing to do at PRIMARY Camera\n");
-		}
-
-		/*
-		 * When switching from secondary YUV camera
-		 * to primary Raw Bayer Camera, a hang is observed without the
-		 * below delay. I2C access failure are observed while
-		 * communicating with primary camera sensor indicating camera
-		 * sensor was not powered up correctly.
-		 */
-
-		mdelay(CLOCK_ENABLE_DELAY);
-	}
-	else /* Power Off Sequence for Skomer */
-	{
-		if(info->pdata->camera_slot == SECONDARY_CAMERA) 
-		{
-			NCP6914_SubCamera_Off(info, on);        
-		}
-		else 
-		{
-			/*
-			 * When switching from Primary YUV camera
-			 * sensor sequence operated at .dat file	
-			 */
-
-			printk(KERN_DEBUG "Nothing to do at PRIMARY Camera\n");
-		}
-
-		subPMIC_PowerOff(0x0);
-
-		mmio_cam_control_clocks(info, false);
-		info->pdata->power_disable(info->pdata);
-
-		mdelay(CLOCK_ENABLE_DELAY);
-
-		gpio_set_value(PRIMARY_CAMERA_RESET, 0);
-		gpio_set_value(PRIMARY_CAMERA_STBY, 0);
-		gpio_set_value(SECONDARY_CAMERA_RESET, 0);
-		gpio_set_value(SECONDARY_CAMERA_STBY, 0);
-	}
-
 #endif
 	return err;
 }
@@ -2193,13 +1948,6 @@ static int __devinit mmio_probe(struct platform_device *pdev)
 	{
 		dev_err(info->dev, "system_rev: %d, Could not find Camera Sub-PMIC\n", system_rev);
 	}
-#elif defined(CONFIG_MACH_SEC_SKOMER) || defined(CONFIG_MACH_SEC_HENDRIX)
-	dev_info(info->dev, "system_rev %d, NCP6914 Camera Sub-PMIC\n", system_rev);
-	subPMIC_module_init = NCP6914_subPMIC_module_init;
-	subPMIC_module_exit = NCP6914_subPMIC_module_exit;
-	subPMIC_PowerOn     = NCP6914_subPMIC_PowerOn;
-	subPMIC_PowerOff    = NCP6914_subPMIC_PowerOff;
-	subPMIC_PinOnOff    = NCP6914_subPMIC_PinOnOff;
 #endif
 
 	sec_camera_gpio_init();
